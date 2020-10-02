@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+   name: codimdapp
+spec:
+   replicas: 3
+   selector:
+     matchLabels:
+       app: codimd
+   template:
+     metadata:
+       labels:
+         app: codimd
+     spec:
+       containers:
+       - name: codimdapp
+         image: hachikoapp/codimd:{{TAG}}
+         imagePullPolicy: Always
+         command: ["npm"]
+         args: ["start"]         
+         ports:
+         - containerPort: 3000
+         env:
+         - name: NODE_ENV
+           value: production       
+         - name: DB_HOST
+           value: {{DB_ENDPOINT}}
+         - name: DB_NAME
+           value:  hachikocodimd
+         - name: DB_USERNAME
+           value: root
+         - name: DB_PASSWORD
+           value: {{DB_PASSWORD}}
+         - name: DB_DIALECT
+           value: mysql
