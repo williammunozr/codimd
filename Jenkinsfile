@@ -56,7 +56,7 @@ pipeline {
             }
         }
 
-        stage('Timeoff Deployment to EKS') {
+        stage('CodiMD Deployment to EKS') {
             steps {
                 script {
                   sh """
