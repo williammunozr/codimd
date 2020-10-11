@@ -1,35 +1,25 @@
-FROM lsiobase/ubuntu:bionic
+ARG RUNTIME
 
-ARG DEBIAN_FRONTEND="noninteractive"
-ENV TZ=America/Bogota
+FROM hackmdio/buildpack:node-10-0baafb79 as BUILD
 
-RUN \
- echo "*** Install Build Packages ***" && \
- apt-get update && \
- apt-get install -y \
-	git \
-	gnupg \
-	jq \
-	libssl-dev \
-    make && \
- echo "**** install runtime *****" && \
- curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - && \
- echo 'deb https://deb.nodesource.com/node_10.x bionic main' > /etc/apt/sources.list.d/nodesource.list && \
- echo "**** install yarn repository ****" && \
- curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
- echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list && \
- apt-get update && \
- apt-get install -y \
-	fontconfig \
-	fonts-noto \
-	netcat-openbsd \
-	nodejs \
-	yarn
+COPY --chown=hackmd:hackmd . .
 
-WORKDIR /app
-COPY . .
+RUN set -xe && \
+    git reset --hard && \
+    git clean -fx && \
+    npm install && \
+    npm run build && \
+    cp ./deployments/docker-entrypoint.sh ./ && \
+    cp .sequelizerc.example .sequelizerc && \
+    rm -rf .git .gitignore .travis.yml .dockerignore .editorconfig .babelrc .mailmap .sequelizerc.example \
+        test docs contribute \
+        package-lock.json webpack.prod.js webpack.htmlexport.js webpack.dev.js webpack.common.js \
+        config.json.example README.md CONTRIBUTING.md AUTHORS node_modules
 
-RUN npm install
-
+FROM $RUNTIME
+USER hackmd
+WORKDIR /home/hackmd/app
+COPY --chown=1500:1500 --from=BUILD /home/hackmd/app .
+RUN npm install --production && npm cache clean --force && rm -rf /tmp/{core-js-banners,phantomjs}
 EXPOSE 3000
-CMD npm start
+ENTRYPOINT ["/home/hackmd/app/docker-entrypoint.sh"]
