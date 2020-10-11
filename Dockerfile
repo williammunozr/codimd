@@ -27,9 +27,8 @@ RUN \
 	yarn
 
 WORKDIR /app
-RUN git clone https://github.com/williammunozr/codimd.git codimd
+COPY . .
 
-WORKDIR /app/codimd
 RUN npm install
 
 EXPOSE 3000
