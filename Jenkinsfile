@@ -35,7 +35,7 @@ pipeline {
             steps { 
                 script { 
                     sh 'pwd'
-                    dockerImage = docker.build("${REGISTRY}:${env.GIT_COMMIT_SHORT}")
+                    dockerImage = docker.build("${REGISTRY}:${env.GIT_COMMIT_SHORT}", "${WORKSPACE}/deployments")
                 }
             } 
         }
