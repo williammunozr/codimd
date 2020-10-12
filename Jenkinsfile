@@ -56,6 +56,7 @@ pipeline {
             }
         }
 
+        // While the Kubernetes Deployment Plugin is fixed
         stage('CodiMD Deployment to EKS') {
             steps {
                 script {
