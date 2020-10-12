@@ -33,6 +33,9 @@ pipeline {
 
         stage('Building Codimd Image') { 
             steps { 
+                when {
+                    branch 'main'
+                }
                 script { 
                     sh 'pwd'
                     dockerImage = docker.build("${REGISTRY}:${env.GIT_COMMIT_SHORT}")
@@ -41,6 +44,9 @@ pipeline {
         }
 
         stage('Deploy Codimd Image') { 
+            when {
+                branch 'main'
+            }
             steps { 
                 script { 
                     docker.withRegistry( '', registryCredential ) { 
@@ -51,6 +57,9 @@ pipeline {
         } 
 
         stage('Cleaning Up') { 
+            when {
+                branch 'main'
+            }
             steps { 
                 sh "docker rmi $REGISTRY:$GIT_COMMIT_SHORT" 
             }
@@ -58,6 +67,9 @@ pipeline {
 
         // While the Kubernetes Deployment Plugin is fixed
         stage('CodiMD Deployment to EKS') {
+            when {
+                branch 'main'
+            }
             steps {
                 script {
                   sh """
@@ -73,6 +85,22 @@ pipeline {
                     sed -i 's/{{DB_ENDPOINT}}/$DB_ENDPOINT/g' deployments/codimd-deployment.yaml
                     kubectl apply -f deployments/codimd-deployment.yaml
                   """
+                }
+            }
+        }
+
+        // Delete application from EKS
+        stage('Delete Application from EKS') {
+            when {
+                branch 'destroy'
+            }
+            steps {
+                script {
+                    sh """
+                      aws eks --region $REGION_ID update-kubeconfig --name $EKS_CLUSTER_NAME
+                      kubectl delete service codimdapp
+                      kubectl delete deployment codimdapp
+                    """
                 }
             }
         }
