@@ -1,6 +1,6 @@
 {
   "name": "codimd",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Realtime collaborative markdown notes on all platforms.",
   "keywords": [
     "Collaborative",
@@ -10,7 +10,7 @@
   "bugs": "https://github.com/hackmdio/codimd/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/hackmdio/codimd.git"
+    "url": "https://github.com/williammunozr/codimd.git"
   },
   "license": "AGPL-3.0",
   "main": "app.js",
