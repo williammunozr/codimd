@@ -2,12 +2,6 @@
     "production": {
         "domain": "codimd.cloud-station.io",
         "loglevel": "info",
-        "hsts": {
-            "enable": true,
-            "maxAgeSeconds": 31536000,
-            "includeSubdomains": true,
-            "preload": true
-        },
         "db": {
             "username": "",
             "password": "",
