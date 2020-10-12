@@ -21,7 +21,7 @@ pipeline {
         DB_ENDPOINT = credentials('DB_ENDPOINT')
         DB_USERNAME = credentials('DB_USERNAME')
         DB_PASSWORD = credentials('DB_PASSWD')
-        DB_DIALECT = credentials('DB_DIALECT')
+        DB_DIALECT = credentials('DB_DIALECT_CODIMD')
         
         registryCredential = 'dockerHubId' 
 
@@ -68,7 +68,7 @@ pipeline {
                     sed -i 's/{{DB_NAME}}/$DB_NAME/g' deployments/codimd-deployment.yaml
                     sed -i 's/{{DB_USERNAME}}/$DB_USERNAME/g' deployments/codimd-deployment.yaml
                     sed -i 's/{{DB_PASSWORD}}/$DB_PASSWORD/g' deployments/codimd-deployment.yaml
-                    sed -i 's/{{DB_DIALECT}}/$DB_DIALECT/g' deployments/codimd-deployment.yaml
+                    sed -i 's/{{DB_DIALECT}}/$DB_DIALECT_CODIMD/g' deployments/codimd-deployment.yaml
                     sed -i 's/{{DB_ENDPOINT}}/$DB_ENDPOINT/g' deployments/codimd-deployment.yaml
                     kubectl apply -f deployments/codimd-deployment.yaml
                   """
