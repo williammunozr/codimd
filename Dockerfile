@@ -35,6 +35,8 @@ RUN apk add --no-cache --virtual .dep \
       python && \
     apk add --no-cache --no-progress --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/ \
       gosu && \
+    mv .sequelizerc.example .sequelizerc && \
+    mv config.json.example config.json && \
     \
     # Install NPM dependencies and build project
     yarn install --pure-lockfile && \
