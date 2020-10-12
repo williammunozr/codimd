@@ -32,10 +32,10 @@ pipeline {
     stages { 
 
         stage('Building Codimd Image') { 
+            when {
+                branch 'main'
+            }
             steps { 
-                when {
-                    branch 'main'
-                }
                 script { 
                     sh 'pwd'
                     dockerImage = docker.build("${REGISTRY}:${env.GIT_COMMIT_SHORT}")
