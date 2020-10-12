@@ -33,7 +33,7 @@ pipeline {
 
         stage('Building Codimd Image') { 
             when {
-                branch 'main'
+                branch 'develop'
             }
             steps { 
                 script { 
@@ -45,7 +45,7 @@ pipeline {
 
         stage('Deploy Codimd Image') { 
             when {
-                branch 'main'
+                branch 'develop'
             }
             steps { 
                 script { 
@@ -58,7 +58,7 @@ pipeline {
 
         stage('Cleaning Up') { 
             when {
-                branch 'main'
+                branch 'develop'
             }
             steps { 
                 sh "docker rmi $REGISTRY:$GIT_COMMIT_SHORT" 
@@ -68,7 +68,7 @@ pipeline {
         // While the Kubernetes Deployment Plugin is fixed
         stage('CodiMD Deployment to EKS') {
             when {
-                branch 'main'
+                branch 'develop'
             }
             steps {
                 script {
