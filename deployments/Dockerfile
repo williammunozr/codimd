@@ -35,14 +35,6 @@ RUN apk add --no-cache --virtual .dep \
       python && \
     apk add --no-cache --no-progress --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/ \
       gosu && \
-    git log --pretty=format:'%ad %h %d' --abbrev-commit --date=short -1 && echo && \
-    git rev-parse HEAD > /tmp/gitref && \
-    rm -rf /codimd/.git && \
-    # Mime the git repository for fullversion
-    mkdir /codimd/.git && \
-    mv /tmp/gitref /codimd/.git/HEAD && \
-    jq ".repository.url = \"${CODIMD_REPOSITORY}\"" /codimd/package.json > /codimd/package.new.json && \
-    mv /codimd/package.new.json /codimd/package.json && \
     \
     # Install NPM dependencies and build project
     yarn install --pure-lockfile && \
@@ -53,6 +45,7 @@ RUN apk add --no-cache --virtual .dep \
     yarn install && \
     yarn cache clean && \
     apk del .dep && \
+    rm -rf .git && \
     \
     adduser -u $UID -h /codimd/ -D -S codimd && \
     chown -R codimd /codimd/
