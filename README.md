@@ -1,3 +1,86 @@
+
+# CodiMD Continuous Integration & Continuous Deployment
+
+## Architecture
+
+![alt text](images/Application_Deployment.png "Application Proposal")
+
+## Required Infrastructure to test this application
+
+In the following link we implement the Infrastructure on AWS Cloud Provider where we can deploy this application. 
+
+- [Infrastructure as Code](https://github.com/williammunozr/terraform-aws-eks-postgres-rds)
+
+## Jenkins Plugins Requirements
+
+- [Docker Plugin](https://plugins.jenkins.io/docker-plugin/)
+- [AWS Secrets Manager Credentials Provider](https://plugins.jenkins.io/aws-secrets-manager-credentials-provider/)
+- [Kubernetes Continuous Deploy](https://plugins.jenkins.io/kubernetes-cd/)
+
+## AWS Policies needed for Jenkins EC2 AWS Role
+
+You need to create the following policies:
+
+### AWSSecretsManagerJenkinsPolicy
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "secretsmanager:GetRandomPassword",
+                "secretsmanager:GetResourcePolicy",
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+                "secretsmanager:ListSecretVersionIds",
+                "secretsmanager:ListSecrets"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
+
+### AWSSecretsManagerJenkinsPolicy
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": "eks:*",
+            "Resource": "*"
+        }
+    ]
+}
+```
+
+### AWS Role AmazonEC2JenkinsRole for Jenkins EC2
+
+Create a role `AmazonEC2JenkinsRole` and assign the following policies, then assign this role to the Jenkins EC2.
+
+- AmazonEC2RoleforSSM (This policy lets you to connect to the EC2 Jenkins instance using Session Manager)
+- AWSSecretsManagerJenkinsPolicy
+- AWSSecretsManagerJenkinsPolicy
+
+### AWS Secrets Manager Access
+
+We need to have access to the following secrets values:
+
+- DB_ENDPOINT
+- AWS_ACCOUNT_ID
+- DB_NAME
+- DB_USERNAME
+- DB_PASSWD
+- DB_DIALECT_CODIMD
+
+We need the tags `Key=jenkins:credentials:type,Value=string` because in the application deployment, we are going to use that tag to recover the secrets during the pipeline.
+
 CodiMD
 ===
 
